@@ -1,2 +1,2 @@
 # Recn-Play
-Pagina rec 
+link (https://jaozinnm.github.io/Recn-Play/)
