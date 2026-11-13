@@ -1,0 +1,376 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TECTRIS · Jogos que Ensinam · Rec’n’Play 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#080b12;--panel:#0e141e;--line:#243146;--txt:#e8edf7;--mut:#93a0b4;
+--cy:#00f5ff;--ye:#ffe600;--mg:#d946ef;--gr:#19f58a;--rd:#ff4268;--bl:#4387ff;--or:#ff9d38;
+--d:'Bricolage Grotesque','Trebuchet MS',system-ui,sans-serif;--m:'DM Mono',ui-monospace,Consolas,monospace}
+*{box-sizing:border-box;margin:0}
+html{scroll-behavior:smooth;scroll-snap-type:y proximity}
+body{background:radial-gradient(ellipse at 85% 5%,#131c33,transparent 45%),var(--bg);color:var(--txt);font-family:var(--d);overflow-x:hidden}
+section{min-height:100vh;scroll-snap-align:start;padding:clamp(56px,9vh,96px) clamp(22px,7vw,110px);display:flex;flex-direction:column;justify-content:center;border-bottom:1px solid #141c2a}
+.in{width:100%;max-width:1200px;margin:0 auto}
+h1,h2{font-weight:800;line-height:1;letter-spacing:-.03em}
+h2{font-size:clamp(34px,5.4vw,70px);max-width:15em;margin:18px 0 0}
+p{font-size:clamp(17px,1.7vw,23px);line-height:1.5;color:#c4cddb}
+.mono{font-family:var(--m)}
+.tag{display:inline-block;font:500 clamp(14px,1.2vw,17px) var(--m);padding:8px 16px;border:2px solid currentColor;border-radius:99px;transform:rotate(-2deg)}
+.c1{color:var(--cy)}.c2{color:var(--ye)}.c3{color:var(--mg)}.c4{color:var(--gr)}.c5{color:var(--rd)}
+.lead{margin-top:20px;max-width:44em}
+/* hero */
+.hero .in{display:grid;grid-template-columns:1.3fr 1fr;gap:48px;align-items:center}
+.logo{font-size:clamp(64px,12.5vw,190px);letter-spacing:-.05em;margin:20px 0 8px;line-height:.9}
+.logo span:nth-child(1){color:var(--cy)}.logo span:nth-child(2){color:var(--ye)}.logo span:nth-child(3){color:var(--mg)}.logo span:nth-child(4){color:var(--gr)}.logo span:nth-child(5){color:var(--rd)}.logo span:nth-child(6){color:var(--bl)}.logo span:nth-child(7){color:var(--or)}
+.sub{font-size:clamp(20px,2.4vw,32px);font-weight:500;color:var(--txt)}
+.ev{margin-top:28px;font:400 clamp(14px,1.3vw,18px)/1.8 var(--m);color:var(--mut)}.ev b{color:var(--ye);font-weight:500}
+.scroll{margin-top:30px;font:500 15px var(--m);color:var(--cy);animation:bob 1.8s ease-in-out infinite}
+@keyframes bob{50%{transform:translateY(7px)}}
+.boardwrap{position:relative;justify-self:center;padding:12px;background:#0a111b;border:1px solid #2a3a50;box-shadow:0 20px 80px #000a,0 0 60px #00f5ff14;transform:rotate(3deg);width:min(100%,330px)}
+.board{display:grid;grid-template-columns:repeat(10,1fr);gap:3px;padding:6px;background:#090d15}
+.board i{aspect-ratio:1;background:#111a27;border:1px solid #192434}
+.board i.f{border-color:#fff4;box-shadow:inset 0 0 8px #fff4,0 0 9px currentColor}
+.board i.g{background:#646464;border-color:#888}
+.kill{position:absolute;left:0;right:0;border-top:2px dashed var(--rd);animation:kl 2s ease-in-out infinite}
+.kill b{position:absolute;right:-6px;top:-13px;background:var(--bg);color:var(--rd);font:500 11px var(--m);padding:1px 6px}
+@keyframes kl{50%{border-color:#ff426855}}
+/* cards */
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:22px;margin-top:40px}
+.card{background:var(--panel);border:1px solid var(--line);border-top:5px solid var(--c,var(--cy));padding:26px 28px;border-radius:6px 6px 24px 6px;display:flex;flex-direction:column;gap:10px}
+.card h3{font-size:clamp(22px,2.2vw,30px);color:var(--c,var(--cy));letter-spacing:-.02em}
+.card .mono{font-size:15px;color:var(--mut)}
+.card p{font-size:clamp(16px,1.5vw,20px)}
+.big{font-size:clamp(46px,5vw,68px);font-weight:800;color:var(--c,var(--cy));letter-spacing:-.04em;line-height:1}
+.ok{--c:var(--gr)}.no{--c:var(--rd)}
+.name{font-size:clamp(28px,4vw,52px);font-weight:800;letter-spacing:-.03em;margin-top:26px}
+.badges{display:flex;gap:12px;flex-wrap:wrap;margin-top:22px}
+.badges span{font:500 clamp(14px,1.4vw,19px) var(--m);padding:10px 18px;border-radius:10px;background:#131c29;border:1px solid #2c3b52}
+.badges span.hl{border-color:var(--ye);color:var(--ye)}
+.eq{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-top:34px;font-size:clamp(22px,3vw,40px);font-weight:800;letter-spacing:-.02em}
+.eq i{font-style:normal;color:var(--mut);font-weight:500}
+/* quiz */
+.quiz{margin-top:36px;background:var(--panel);border:2px solid var(--mg);border-radius:6px 6px 28px 6px;padding:clamp(20px,3vw,34px);display:grid;grid-template-columns:1fr 1fr;gap:12px 14px}
+.quiz .q{grid-column:1/-1;font-size:clamp(20px,2.4vw,30px);font-weight:500;margin-bottom:4px}
+.quiz code{font:500 1em var(--m);color:var(--ye)}
+.quiz button{font:500 clamp(17px,1.8vw,24px) var(--m);text-align:left;background:#131c29;color:var(--txt);border:2px solid #283547;padding:14px 18px;border-radius:10px;cursor:pointer}
+.quiz button:hover{border-color:var(--mg)}
+.quiz button.right{border-color:var(--gr);background:#19f58a1c}.quiz button.bad{border-color:var(--rd);background:#ff42681c}
+.fb{grid-column:1/-1;min-height:28px;font-size:clamp(16px,1.6vw,21px)}
+/* modos */
+.modes{display:grid;grid-template-columns:repeat(2,1fr);gap:22px;margin-top:40px}
+.mode{background:var(--panel);border:1px solid var(--line);border-left:6px solid var(--c);padding:22px 26px;border-radius:6px 22px 6px 6px}
+.mode h3{font-size:clamp(24px,2.6vw,36px);color:var(--c);letter-spacing:-.02em}
+.mode p{font-size:clamp(15px,1.4vw,19px);margin-top:6px}
+.mode .mono{font-size:14px;color:var(--mut);margin-top:10px;display:block}
+/* demo */
+.demo{display:grid;grid-template-columns:1.1fr 1fr;gap:28px;margin-top:36px;align-items:start}
+.check{list-style:none;display:grid;gap:10px;padding:0}
+.check li{display:flex;align-items:center;gap:14px;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px 18px;font-size:clamp(17px,1.8vw,24px);color:var(--txt);cursor:pointer;user-select:none;transition:.2s}
+.check li:before{content:"";flex:none;width:26px;height:26px;border:2px solid #46546a;border-radius:7px}
+.check li.done{opacity:.5;text-decoration:line-through}
+.check li.done:before{background:var(--gr);border-color:var(--gr);box-shadow:0 0 12px var(--gr)}
+.callout{margin-top:22px;padding:18px 22px;border-left:5px solid var(--ye);background:#1a1a0c;font-size:clamp(18px,1.9vw,26px);font-weight:500;border-radius:4px 14px 14px 4px}
+kbd{font:500 clamp(15px,1.4vw,19px) var(--m);color:#fff;background:#1a2535;border:1px solid #3a4a62;border-bottom-width:4px;border-radius:7px;padding:3px 10px;margin:0 3px 8px 0;display:inline-block}
+.keycard{display:flex;flex-direction:column;gap:6px}
+.keycard small{font:400 14px var(--m);color:var(--mut);margin-top:6px}
+/* dev */
+.mig{display:grid;grid-template-columns:1fr auto 1fr;gap:22px;align-items:stretch;margin-top:36px}
+.mid{align-self:center;font-size:54px;color:var(--ye)}
+.stack{display:flex;gap:10px;flex-wrap:wrap;margin-top:8px}
+.stack span{font:500 clamp(14px,1.3vw,19px) var(--m);padding:9px 16px;border-radius:10px;background:#131c29;border:1px solid #2c3b52}
+.team{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px;margin-top:26px}
+.team div{background:var(--panel);border:1px solid var(--line);border-left:4px solid var(--c);padding:14px 16px;border-radius:4px 14px 4px 4px}
+.team div.lead2{border-color:var(--ye);background:#17160a}
+.team b{display:block;font-size:20px}.team small{font:400 14px var(--m);color:var(--mut)}
+.url{margin-top:34px;font:500 clamp(20px,3vw,36px) var(--m);color:var(--cy);word-break:break-all}
+.thanks{font-size:clamp(48px,9vw,130px);letter-spacing:-.04em;line-height:.95;margin-top:18px}
+/* nav */
+nav{position:fixed;right:16px;top:50%;transform:translateY(-50%);display:flex;flex-direction:column;gap:10px;z-index:5}
+nav a{width:11px;height:11px;border-radius:3px;background:#2a374c;display:block;transition:.2s}
+nav a.on{background:var(--cy);box-shadow:0 0 10px var(--cy);transform:scale(1.4)}
+@media(max-width:820px){.hero .in{grid-template-columns:1fr}.boardwrap{width:min(60vw,260px)}.mig,.demo,.modes{grid-template-columns:1fr}.mid{transform:rotate(90deg);justify-self:center}.quiz{grid-template-columns:1fr}nav{display:none}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.kill,.scroll{animation:none}}
+button:focus-visible,.check li:focus-visible{outline:3px solid var(--cy);outline-offset:3px}
+
+/* roteiro do apresentador — oculto durante a projeção até ser ativado */
+.speaker-notes{display:none;margin:34px auto 0;width:100%;max-width:1200px;padding:22px 26px;background:#111b2a;border:1px solid #00f5ff66;border-left:5px solid var(--cy);border-radius:8px 18px 8px 8px;color:#dce6f5;font-size:16px;line-height:1.65;}
+.speaker-notes strong{display:block;color:var(--cy);font:500 13px var(--m);letter-spacing:.08em;margin-bottom:14px;}
+.speaker-notes p{font-size:16px;line-height:1.65;color:#dce6f5;margin:0 0 10px;}
+.speaker-notes ol{padding-left:22px;margin:8px 0 12px;}
+.speaker-notes li{margin:5px 0;color:#dce6f5;}
+.speaker-notes em{display:block;margin-top:12px;padding-top:12px;border-top:1px solid #2a3a50;color:var(--ye);font-style:normal;}
+body.show-notes .speaker-notes{display:block;}
+#notes-toggle{position:fixed;left:16px;top:16px;z-index:10;background:#111b2a;color:var(--cy);border:1px solid #00f5ff88;border-radius:999px;padding:10px 15px;font:500 13px var(--m);cursor:pointer;box-shadow:0 6px 24px #0008;}
+#notes-toggle:hover{background:#1b2a3e;}
+body.show-notes section{justify-content:flex-start;}
+@media print{#notes-toggle,nav{display:none!important}.speaker-notes{display:block!important}}
+</style>
+</head>
+<body>
+<nav id="nav" aria-label="Seções"></nav>
+<button id="notes-toggle" type="button" aria-pressed="false">＋ Roteiro de fala (R)</button>
+
+<!-- 1 CAPA -->
+<section class="hero" id="s1"><div class="in">
+  <div>
+    <span class="tag c2">Jogos que Ensinam · Oficina · Arena Educação</span>
+    <h1 class="logo" aria-label="TECTRIS"><span>T</span><span>E</span><span>C</span><span>T</span><span>R</span><span>I</span><span>S</span></h1>
+    <p class="sub">Aprenda C jogando: cada resposta muda a partida.</p>
+    <p class="ev"><b>Rec’n’Play 2026</b> · 13 Nov, 12h20–13h50<br>Tecnologia, Gamificação e Aprendizagem</p>
+    <p class="scroll">role para baixo ↓</p>
+  </div>
+  <div class="boardwrap"><div class="board" id="hero-board"></div></div>
+</div>
+  <aside class="speaker-notes" aria-label="Roteiro de fala do slide 1"><strong>ROTEIRO DE FALA — ABERTURA</strong>
+<p>Boa tarde, pessoal! Tudo bem com vocês?</p>
+<p>Primeiramente, queria agradecer pela presença de todo mundo e pela oportunidade de apresentar nosso projeto aqui no Rec'n'Play.</p>
+<p>Meu nome é João Rafael, sou estudante de Análise e Desenvolvimento de Sistemas na CESAR School e hoje estou aqui representando nossa equipe para apresentar o Tectris.</p>
+<p>O Tectris é um projeto que desenvolvemos durante a disciplina de Projeto 2. Ele surgiu de uma pergunta: e se pudéssemos transformar o aprendizado de programação em uma experiência de jogo?</p>
+<p>Hoje quero mostrar não apenas o jogo que construímos, mas também o processo de desenvolvimento, as tecnologias envolvidas e a proposta educacional por trás dele.</p>
+<em>Transição: “Mas antes de mostrar como funciona, acho importante explicar de onde surgiu essa ideia.”</em></aside>
+</section>
+
+<!-- 2 QUEM SOU -->
+<section id="s2"><div class="in">
+  <span class="tag c3">Boa tarde!</span>
+  <h2>Um projeto de estudantes, para mostrar que jogo também ensina.</h2>
+  <div class="name" id="who"><span class="c1">Tech Leader</span> do Tectris</div>
+  <div class="badges">
+    <span>Análise e Desenvolvimento de Sistemas</span>
+    <span>CESAR School</span>
+    <span class="hl">Disciplina: Projeto 2</span>
+  </div>
+  <p class="lead">Hoje a proposta é ver como tecnologia e jogos podem ser ferramentas de aprendizagem. E o Tectris nasceu exatamente dessa pergunta.</p>
+</div>
+  <aside class="speaker-notes" aria-label="Roteiro de fala do slide 2"><strong>ROTEIRO DE FALA — QUEM SOU EU</strong>
+<p>Boa tarde, pessoal! Tudo bem com vocês?</p>
+<p>Meu nome é João Rafael, sou estudante de Análise e Desenvolvimento de Sistemas na CESAR School e hoje estou aqui representando nossa equipe para apresentar o Tectris.</p>
+<p>Esse projeto foi desenvolvido durante a disciplina de Projeto 2. A proposta de hoje é mostrar como a tecnologia e os jogos podem ser utilizados como ferramentas de aprendizagem.</p>
+<em>Transição: “E foi justamente pensando nessa relação entre jogos e aprendizagem que surgiu a ideia do Tectris.”</em></aside>
+</section>
+
+<!-- 3 IDEIA -->
+<section id="s3"><div class="in">
+  <span class="tag c2">De onde veio a ideia</span>
+  <h2>Aprender a programar pode ficar repetitivo.</h2>
+  <div class="grid">
+    <div class="card" style="--c:var(--rd)"><span class="mono">o problema</span><h3>Teoria + exercícios</h3><p>No começo, o contato com programação é cheio de conteúdo teórico e questões que, dependendo de como são apresentadas, cansam.</p></div>
+    <div class="card" style="--c:var(--ye)"><span class="mono">a solução</span><h3>Tetris + perguntas</h3><p>Pegamos uma mecânica que todo mundo conhece e combinamos com perguntas e desafios de conhecimento.</p></div>
+  </div>
+  <div class="eq"><span class="c1">Tecnologia</span><i>+</i><span class="c2">C</span><i>+</i><span class="c3">Tetris</span><i>=</i><span class="c4">Tectris</span></div>
+</div>
+  <aside class="speaker-notes" aria-label="Roteiro de fala do slide 3"><strong>ROTEIRO DE FALA — APRESENTAÇÃO</strong>
+<p>Quando começamos a pensar no projeto, observamos uma dificuldade comum para quem está começando a aprender programação.</p>
+<p>No início, temos muito contato com conceitos teóricos, estruturas condicionais, variáveis, laços de repetição, funções e vários outros assuntos. Tudo isso é importante, mas, dependendo de como o conteúdo é apresentado, o aprendizado pode acabar ficando repetitivo.</p>
+<p>Então pensamos: como poderíamos tornar esse processo mais dinâmico e interessante?</p>
+<p>Foi aí que surgiu a ideia de utilizar uma mecânica de jogo conhecida por muitas pessoas: o Tetris. A proposta era combinar a dinâmica de encaixar peças com perguntas e desafios de conhecimento.</p>
+<p>Mas não queríamos simplesmente colocar um questionário dentro de um jogo. Queríamos que as respostas tivessem consequências reais dentro da partida. E foi assim que nasceu o Tectris.</p>
+<em>O nome Tectris representa a combinação entre tecnologia, programação em C e a inspiração na mecânica do Tetris.</em></aside>
+</section>
+
+<!-- 4 COMO FUNCIONA -->
+<section id="s4"><div class="in">
+  <span class="tag c1">Como funciona</span>
+  <h2>Habilidade com as peças e conhecimento na mesma partida.</h2>
+  <div class="grid">
+    <div class="card" style="--c:var(--cy)"><span class="mono">1 · você joga</span><h3>Encaixe as peças</h3><p>Mova, gire e complete linhas, como no Tetris clássico.</p></div>
+    <div class="card" style="--c:var(--ye)"><span class="mono">2 · de tempos em tempos</span><h3>Surge uma pergunta</h3><p>Programação em C ou conhecimentos gerais, conforme o modo escolhido.</p></div>
+    <div class="card ok"><span class="mono">3 · acertou</span><h3>+150 pontos</h3><p>Recompensa em pontuação e alívio no tabuleiro.</p></div>
+    <div class="card no"><span class="mono">3 · errou</span><h3>Linha de penalidade</h3><p>Entra uma linha cinza e a partida fica mais difícil.</p></div>
+  </div>
+  <div class="quiz" id="quiz">
+    <div class="q">Vamos testar! Qual é o resultado de <code>10 / 3</code> em C, com inteiros?</div>
+    <button data-r="0">3,33</button><button data-r="1">3</button><button data-r="0">4</button><button data-r="0">1</button>
+    <div class="fb" id="fb"></div>
+  </div>
+</div>
+  <aside class="speaker-notes" aria-label="Roteiro de fala do slide 4"><strong>ROTEIRO DE FALA — COMO FUNCIONA</strong>
+<p>Basicamente, o Tectris combina duas habilidades: a capacidade de organizar as peças e o conhecimento necessário para responder às perguntas.</p>
+<p>Para quem já conhece o Tetris, a mecânica inicial é familiar. O jogador movimenta, gira e encaixa as peças para completar linhas e evitar que o tabuleiro fique cheio.</p>
+<p>O diferencial é que, durante a partida, aparecem perguntas que precisam ser respondidas. Elas podem envolver programação em C ou conhecimentos gerais, dependendo do modo escolhido.</p>
+<p>A resposta interfere diretamente no andamento do jogo: quando o jogador acerta, recebe 150 pontos e uma recompensa; quando erra, uma linha cinza é adicionada ao tabuleiro, aumentando a dificuldade.</p>
+<p>Percebam que o conhecimento não está separado da experiência. O jogador precisa pensar na resposta porque ela pode facilitar ou dificultar sua própria partida. Isso cria uma relação entre conhecimento, estratégia e desempenho.</p>
+<em>Interação: pergunte “Em C, quanto é 10 dividido por 3 quando trabalhamos com números inteiros?”. Explique que o resultado é 3, pois a parte decimal é descartada.</em></aside>
+</section>
+
+<!-- 5 MODOS -->
+<section id="s5"><div class="in">
+  <span class="tag c2">Modos de jogo</span>
+  <h2>Para quem programa e para quem nunca programou.</h2>
+  <div class="modes">
+    <div class="mode" style="--c:var(--cy)"><h3>Solo C</h3><p>Perguntas de programação em C, com resposta digitada.</p><span class="mono">1 jogador · 100 perguntas</span></div>
+    <div class="mode" style="--c:var(--ye)"><h3>Solo Easy</h3><p>Conhecimentos gerais com 4 alternativas. Ideal para quem nunca programou.</p><span class="mono">1 jogador · 100 perguntas</span></div>
+    <div class="mode" style="--c:var(--mg)"><h3>Duelo C</h3><p>Dois jogadores competem na mesma tela com perguntas de C.</p><span class="mono">2 jogadores · local</span></div>
+    <div class="mode" style="--c:var(--gr)"><h3>Duelo Easy</h3><p>A disputa 1 contra 1 com conhecimentos gerais. Todo mundo pode entrar.</p><span class="mono">2 jogadores · local</span></div>
+  </div>
+</div>
+  <aside class="speaker-notes" aria-label="Roteiro de fala do slide 5"><strong>ROTEIRO DE FALA — MODOS DE JOGO</strong>
+<p>Uma preocupação que tivemos durante o desenvolvimento foi não limitar o jogo apenas a pessoas que já sabem programar. Afinal, queremos que diferentes públicos consigam participar.</p>
+<p>Por isso, desenvolvemos quatro modos. No Solo C, uma pessoa responde perguntas de programação em C, digitando a resposta. No Solo Easy, uma pessoa responde perguntas de conhecimentos gerais com quatro alternativas.</p>
+<p>Também temos os modos Duelo C e Duelo Easy, nos quais duas pessoas competem na mesma tela: no primeiro, com perguntas de C; no segundo, com conhecimentos gerais.</p>
+<p>Assim, uma pessoa que nunca teve contato com programação pode experimentar o Solo Easy, enquanto quem está estudando C pode testar seus conhecimentos no Solo C. Os modos de duelo acrescentam uma experiência competitiva e compartilhada.</p>
+<em>Transição: “Mas chega de falar. Acho que a melhor maneira de entender o Tectris é vendo ele funcionar.”</em></aside>
+</section>
+
+<!-- 6 DEMO -->
+<section id="s6"><div class="in">
+  <span class="tag c4">Demonstração</span>
+  <h2>Mais interessante mostrar do que explicar.</h2>
+  <div class="demo">
+    <ul class="check" id="check">
+      <li tabindex="0">Tela inicial e modos</li>
+      <li tabindex="0">Uma partida começando</li>
+      <li tabindex="0">Movimentação das peças</li>
+      <li tabindex="0">Uma pergunta aparecendo</li>
+      <li tabindex="0">Resposta correta e recompensa</li>
+      <li tabindex="0">Resposta errada e penalidade</li>
+      <li tabindex="0">Pontuação final</li>
+    </ul>
+    <div>
+      <div class="card keycard" style="--c:var(--cy)"><h3>Controles</h3>
+        <small>Jogador 1</small><div><kbd>A</kbd><kbd>D</kbd><kbd>W</kbd><kbd>S</kbd><kbd>Espaço</kbd></div>
+        <small>Jogador 2 (ou solo)</small><div><kbd>←</kbd><kbd>→</kbd><kbd>↑</kbd><kbd>↓</kbd><kbd>Enter</kbd></div>
+        <small>Pausar</small><div><kbd>P</kbd></div>
+      </div>
+      <div class="callout">Alguém quer experimentar? Fique à vontade!</div>
+    </div>
+  </div>
+</div>
+  <aside class="speaker-notes" aria-label="Roteiro de fala do slide 6"><strong>ROTEIRO DE FALA — DEMONSTRAÇÃO</strong>
+<p>Agora vou abrir o jogo para vocês conhecerem um pouco melhor a experiência.</p>
+<ol><li>Mostre a tela inicial e os quatro modos disponíveis.</li><li>Escolha um modo e inicie uma partida.</li><li>Mostre a movimentação e o encaixe das peças.</li><li>Aguarde uma pergunta aparecer e leia para o público.</li><li>Responda corretamente e mostre a recompensa de 150 pontos.</li><li>Em seguida, mostre uma resposta incorreta e a linha de penalidade.</li><li>Mostre a pontuação ou o resultado final.</li></ol>
+<p>Durante a demonstração, destaque: “Percebam que não estamos apenas respondendo a uma pergunta separada do jogo. A resposta faz parte da dinâmica da partida e tem uma consequência direta no que acontece no tabuleiro.”</p>
+<p>Depois convide alguém: “Alguém gostaria de experimentar? Pode ficar à vontade!”</p>
+<p><strong>Controles exibidos:</strong> Jogador 1: A, D, W, S e Espaço. Jogador 2 (ou solo): setas e Enter. Pausar: P.</p></aside>
+</section>
+
+<!-- 7 DESENVOLVIMENTO -->
+<section id="s7"><div class="in">
+  <span class="tag c5">Como foi desenvolver</span>
+  <h2>Transformar a ideia em uma aplicação funcional, em oito.</h2>
+  <div class="mig">
+    <div class="card" style="--c:var(--or)"><span class="mono">versão desktop</span><h3>C + Raylib</h3><p>Motor do jogo, perguntas e estatísticas em C, compilados com CMake.</p></div>
+    <span class="mid">›</span>
+    <div class="card"><span class="mono">versão web</span><h3>Jogue em qualquer tela</h3><p>Mesma lógica, com toque, sem instalar e com perguntas offline.</p>
+      <div class="stack"><span>React</span><span>TypeScript</span><span>Vite</span><span>Express</span><span>SQLite</span><span>Vercel</span></div></div>
+  </div>
+  <p class="lead">O desafio não foi só criar o jogo e colocar perguntas dentro: foi fazer as duas partes funcionarem juntas, para a resposta influenciar a partida. Criar software vai além de escrever código: é planejar, testar, trabalhar em equipe e achar saída quando algo não funciona.</p>
+  <div class="team">
+    <div class="lead2"><b>Tech Leader</b><small>decisões técnicas, arquitetura e integração</small></div>
+    <div style="--c:var(--cy)"><b>Larissa Lira</b><small>Product Owner</small></div>
+    <div style="--c:var(--ye)"><b>Alice Sena</b><small>Scrum Master</small></div>
+    <div style="--c:var(--mg)"><b>João Rafael Morato</b><small>Tech Lead</small></div>
+    <div style="--c:var(--gr)"><b>Matheus Vaz</b><small>Backend</small></div>
+    <div style="--c:var(--rd)"><b>Emily Raquel</b><small>Frontend</small></div>
+    <div style="--c:var(--bl)"><b>Cecília Lopes</b><small>Frontend</small></div>
+    <div style="--c:var(--or)"><b>Kezia Aguiar</b><small>Design</small></div>
+    <div style="--c:var(--cy)"><b>Diogo Alcelino</b><small>Design</small></div>
+  </div>
+</div>
+  <aside class="speaker-notes" aria-label="Roteiro de fala do slide 7"><strong>ROTEIRO DE FALA — DESENVOLVIMENTO</strong>
+<p>Falando um pouco sobre o desenvolvimento, esse projeto foi construído por uma equipe de oito estudantes. Precisamos dividir responsabilidades e integrar diferentes partes para transformar a ideia em uma aplicação funcional.</p>
+<p>Na versão desktop, utilizamos a linguagem C e a biblioteca Raylib para desenvolver o motor do jogo, as perguntas e as estatísticas, com compilação usando CMake.</p>
+<p>Também desenvolvemos uma versão web, com React e TypeScript no frontend, Vite, Express e SQLite, além da publicação na Vercel. A proposta da versão web é permitir jogar em diferentes telas, sem instalação, com suporte a toque e perguntas offline.</p>
+<p>O desafio não foi apenas criar a mecânica e inserir perguntas: foi fazer as duas partes funcionarem juntas, para que as respostas realmente influenciassem a partida.</p>
+<p>Eu atuei como Tech Leader, participando das decisões técnicas, da arquitetura e da integração das diferentes partes do sistema. Essa experiência me mostrou que desenvolver software vai muito além de escrever código: envolve planejamento, testes, comunicação, trabalho em equipe e resolução de problemas.</p>
+<p><strong>Equipe:</strong> Larissa Lira (Product Owner), Alice Sena (Scrum Master), João Rafael Morato (Tech Lead), Matheus Vaz (Backend), Emily Raquel e Cecília Lopes (Frontend), Kezia Aguiar e Diogo Alcelino (Design).</p></aside>
+</section>
+
+<!-- 8 EDUCAÇÃO -->
+<section id="s8"><div class="in">
+  <span class="tag c3">Tecnologia, jogos e educação</span>
+  <h2>Gamificação: elementos de jogo em contextos que não são jogos.</h2>
+  <div class="grid">
+    <div class="card" style="--c:var(--cy)"><span class="mono">na sala de aula</span><h3>Revisão com jogo</h3><p>Em vez de uma lista de exercícios, a turma responde perguntas enquanto joga. Mais interesse, participação e revisão.</p></div>
+    <div class="card" style="--c:var(--ye)"><span class="mono">além da programação</span><h3>Outras disciplinas</h3><p>A mesma ideia serve para matemática, história, ciências e muito mais.</p></div>
+    <div class="card" style="--c:var(--gr)"><span class="mono">importante</span><h3>Complemento, não substituto</h3><p>Não substitui o professor nem os métodos tradicionais: é uma ferramenta a mais.</p></div>
+  </div>
+</div>
+  <aside class="speaker-notes" aria-label="Roteiro de fala do slide 8"><strong>ROTEIRO DE FALA — TECNOLOGIA, JOGOS E EDUCAÇÃO</strong>
+<p>Chegando a uma das partes mais importantes do projeto, quero falar sobre a relação entre o Tectris e a educação.</p>
+<p>Gamificação é a utilização de elementos e mecânicas de jogos em contextos que não são necessariamente jogos. A ideia é aproveitar recursos como desafios, objetivos, pontuação e competição para tornar uma experiência mais envolvente.</p>
+<p>No nosso caso, pensamos em como o aprendizado de programação poderia ser associado a uma experiência interativa. Imaginem um professor utilizando o Tectris em sala de aula para revisar conteúdos. Em vez de apenas entregar uma lista de exercícios, ele poderia propor uma atividade em que os alunos respondem perguntas enquanto participam de um jogo.</p>
+<p>Isso pode estimular o interesse, a participação e a revisão dos conteúdos. E a ideia não precisa ficar limitada à programação: podemos imaginar aplicações semelhantes para matemática, história, ciências e outras disciplinas.</p>
+<p>É importante destacar que o objetivo não é substituir o professor nem os métodos tradicionais de ensino, mas oferecer uma ferramenta complementar.</p></aside>
+</section>
+
+<!-- 9 ENCERRAMENTO -->
+<section id="s9"><div class="in">
+  <span class="tag c1">Sua vez</span>
+  <h2 class="thanks">Muito <span class="c4">obrigado</span>! Agora vamos jogar.</h2>
+  <p class="lead">Aprender tecnologia também é pensar em soluções que contribuam com a sociedade e com a educação.</p>
+  <div class="url" id="url">Venha experimentar o Tectris</div>
+</div>
+  <aside class="speaker-notes" aria-label="Roteiro de fala do slide 9"><strong>ROTEIRO DE FALA — ENCERRAMENTO</strong>
+<p>Então, essa foi a nossa experiência com o desenvolvimento do Tectris.</p>
+<p>Mais do que construir um jogo, nosso objetivo foi experimentar como podemos utilizar a tecnologia para criar novas formas de interação com o conhecimento.</p>
+<p>Projetos como esse mostram que aprender tecnologia não significa apenas desenvolver sistemas para resolver problemas comerciais. Também significa pensar em soluções que possam contribuir com a sociedade e com a educação.</p>
+<p>Quero convidar vocês a experimentarem o jogo, conhecerem os modos disponíveis e, principalmente, se divertirem um pouco.</p>
+<p>Muito obrigado pela atenção de vocês!</p></aside>
+</section>
+
+<script>
+// Alternar roteiro do apresentador com a tecla R ou pelo botão no canto superior esquerdo.
+const notesToggle = document.getElementById('notes-toggle');
+function toggleNotes(){ const active = document.body.classList.toggle('show-notes'); notesToggle.textContent = active ? '− Ocultar roteiro (R)' : '＋ Roteiro de fala (R)'; notesToggle.setAttribute('aria-pressed', String(active)); }
+notesToggle.addEventListener('click', toggleNotes);
+
+// Link do jogo publicado (ex.: "tectris.vercel.app")
+const GAME_URL = "";
+// Seu nome (aparece na seção de abertura)
+const SEU_NOME = "";
+if (GAME_URL) document.getElementById('url').textContent = GAME_URL;
+if (SEU_NOME) document.getElementById('who').innerHTML = SEU_NOME + ', <span class="c1">Tech Leader</span> do Tectris';
+
+// tabuleiro decorativo
+const C = {c:'#00f5ff',y:'#ffe600',m:'#d946ef',g:'#19f58a',r:'#ff4268',b:'#4387ff',o:'#ff9d38'};
+const rows = ['..........','..........','..........','..........','..........','..........',
+'....mm....','...mm.....','..........','..........','..........',
+'c.........','c...yy....','c...yy.o..','c.b.....o.','..b.gg..oo','b.b..gg.mm',
+'bbrrcccc.m','####.#####','##.#######'];
+const bd = document.getElementById('hero-board');
+rows.forEach(r => [...r].forEach(ch => {
+  const i = document.createElement('i');
+  if (ch === '#') i.className = 'g';
+  else if (C[ch]) { i.className = 'f'; i.style.background = C[ch]; i.style.color = C[ch]; }
+  bd.appendChild(i);
+}));
+const kl = document.createElement('div');
+kl.className = 'kill'; kl.style.top = '21%'; kl.innerHTML = '<b>KILL LINE</b>';
+bd.parentElement.appendChild(kl);
+
+// navegação lateral + teclas
+const secs = [...document.querySelectorAll('section')];
+const nav = document.getElementById('nav');
+secs.forEach(s => { const a = document.createElement('a'); a.href = '#' + s.id; a.setAttribute('aria-label', s.id); nav.appendChild(a); });
+const io = new IntersectionObserver(es => es.forEach(e => {
+  if (e.isIntersecting) [...nav.children].forEach((a,i) => a.classList.toggle('on', secs[i] === e.target));
+}), {threshold:.5});
+secs.forEach(s => io.observe(s));
+addEventListener('keydown', e => {
+  if (e.target.tagName === 'BUTTON' || e.target.closest('.check')) return;
+  const k = e.key, cur = Math.max(0, secs.findIndex(s => s.getBoundingClientRect().top > -innerHeight/2));
+  if (k === 'ArrowDown' || k === 'PageDown') { e.preventDefault(); secs[Math.min(secs.length-1, cur+1)].scrollIntoView(); }
+  else if (k === 'ArrowUp' || k === 'PageUp') { e.preventDefault(); secs[Math.max(0, cur-1)].scrollIntoView(); }
+  else if (k.toLowerCase() === 'f') document.fullscreenElement ? document.exitFullscreen() : document.documentElement.requestFullscreen();
+  else if (k.toLowerCase() === 'r') toggleNotes();
+});
+
+// mini quiz
+document.getElementById('quiz').addEventListener('click', e => {
+  const b = e.target.closest('button'); if (!b) return;
+  const fb = document.getElementById('fb'), ok = b.dataset.r === '1';
+  b.classList.add(ok ? 'right' : 'bad');
+  fb.style.color = ok ? 'var(--gr)' : 'var(--rd)';
+  fb.textContent = ok ? 'Isso! Em C, inteiro dividido por inteiro descarta a parte decimal. +150 pontos!' : 'Quase! Aqui entraria uma linha de penalidade. Tente outra opção.';
+});
+
+// checklist da demonstração
+document.getElementById('check').addEventListener('click', e => { const li = e.target.closest('li'); if (li) li.classList.toggle('done'); });
+document.getElementById('check').addEventListener('keydown', e => { if ((e.key === 'Enter' || e.key === ' ') && e.target.tagName === 'LI') { e.preventDefault(); e.target.classList.toggle('done'); } });
+</script>
+</body>
+</html>
